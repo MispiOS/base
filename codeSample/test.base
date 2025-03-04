@@ -1,0 +1,23 @@
+function main() {
+    char a = 1;
+    char b = 6;
+    char c = a + b;
+}
+
+/* RESULTAT ATTENDU ASM (+ ou -)
+main:
+    push ebp
+    mov ebp, esp          ; Établit la nouvelle base de la pile
+
+    sub esp, 3            ; Alloue l'espace pour 3 char (1 * 3 = 3 octets)
+
+    mov byte [ebp-1], 1   ; a = 1
+    mov byte [ebp-2], 6   ; b = 6
+    mov al, [ebp-1]       ; eax = a
+    add al, [ebp-2]       ; eax += b
+    mov byte [ebp-3], al  ; c = a + b
+
+    mov esp, ebp          ; Nettoie la pile
+    pop ebp               ; Restaure base pointer
+    ret
+*/
