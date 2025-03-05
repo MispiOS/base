@@ -1,8 +1,8 @@
 class Parser:
-    to_parse: str = ""
+    lines_to_parse: str = ""
 
     def __init__(self, to_parse: str):
-        self.to_parse = to_parse
+        self.lines_to_parse = to_parse.split("\n")
 
     def convert_to_asm(self) -> str:
         """Convert the parsed code to assembly code"""

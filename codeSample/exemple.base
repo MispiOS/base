@@ -1,0 +1,14 @@
+import 'ExempleClass.base'
+
+function void main() {
+    ExempleClass ec = new ExempleClass(4);
+    multiplyByTwoExempleClassNumber(ec)
+}
+
+function int getDoubledExempleClassNumber(ExempleClass ec) {
+    return ec.getNumber() * 2;
+}
+
+function void multiplyByTwoExempleClassNumber(ExempleClass ec) {
+    ec.setNumber( getDoubledExempleClassNumber(ec) )
+}

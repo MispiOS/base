@@ -1,0 +1,15 @@
+class ExempleClass {
+    private int number = 0;
+
+    public construct(int number) {
+        setNumber(number);
+    }
+
+    public int getNumber() {
+        return number;                  // can be this.number, it is the same
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
+}
