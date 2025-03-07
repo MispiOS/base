@@ -1,4 +1,4 @@
-import 'ExempleClass.base'
+import 'ExempleClass.base';
 
 function void main() {
     ExempleClass ec = new ExempleClass(4);
