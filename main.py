@@ -1,23 +1,21 @@
 from sys import argv
 from filemanager import *
 from parser import Parser
+from parserException import *
 
 if __name__ == "__main__":
     if len(argv) != 2:
-        print("No file given in arguments")
-        exit(0)
+        raiseException(ParserException.NO_FILE_GIVEN)
     
     filepath = argv[1]
 
     if not filepath.endswith(".base"):
-        print("The given file is not a Base file")
-        exit(0)
+        raiseException(ParserException.NOT_BASE_FILE, filepath)
 
     file_content = read_file(filepath)
     
     if file_content == None:
-        print("The file given in arguments doesn't exist")
-        exit(0)
+        raiseException(ParserException.FILE_DOES_NOT_EXISTS, filepath)
     
     parser = Parser(file_content)
     

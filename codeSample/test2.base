@@ -1,0 +1,3 @@
+int bonjour = 1;
+char salut = "H"; // c'est "salut"
+bonjour = bonjour +  20;
