@@ -17,7 +17,6 @@ class BaseType(Enum):
 
 def get_base_type(value: str) -> BaseType|ParserException:
     """Return the type of a value"""
-        
     if value == ";":
         res = BaseType.SEMILICON
     elif value == "=":

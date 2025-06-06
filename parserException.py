@@ -5,6 +5,7 @@ class ParserException(Enum):
     NOT_BASE_FILE = "The file '{}' is not a Base file"
     FILE_DOES_NOT_EXISTS = "The file '{}' doesn't exist"
     VARIABLE_FUNCTION_CANNOT_STARTS_WITH_NUMBER = "A variable name or a function name can't start with a number\nAt '{}'."
+    INCORRECT_BRACKETS = "Bracket are not correct !"
 
 def raiseExceptionStr(exception: str, fatal: bool = True):
     """Raise an Exception and terminate the program if asked"""

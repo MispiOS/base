@@ -1,5 +1,7 @@
 from basetoken import BaseToken
+from basetype import BaseType
 from utils import *
+from parserException import ParserException, raiseException
 
 class Parser:
     to_parse: str
@@ -9,6 +11,7 @@ class Parser:
     def __init__(self, to_parse: str):
         self.to_parse = to_parse
         self.generate_tokens()
+        self.verify_brackets()
 
     def generate_tokens(self) -> None:
         """Generate the tokens of the given code"""
@@ -20,6 +23,7 @@ class Parser:
         while offset < offset_limit:
             token: BaseToken = self.next_word(offset, offset_limit)
             tokens.append(token)
+            print(token.get_type())
             offset = token.get_offset() + len(token.get_word())
         self.tokens = tokens
 
@@ -67,6 +71,24 @@ class Parser:
     def get_tokens(self) -> list[BaseToken]:
         """Return the tokens of the given code"""
         return self.tokens
+
+    def verify_brackets(self) -> None:
+        """Verifiy if all brackets are open and closed in the right order"""
+        stack = []
+        for token in self.tokens:
+            if token.get_type() != BaseType.BRACKET:
+                continue
+            bracket = token.get_word()
+            if is_close_braket(bracket):
+                raise_exception = True
+                if len(stack) != 0 and is_same_brakets_type(bracket, stack.pop()):
+                    raise_exception = False
+                if raise_exception:
+                    raiseException(ParserException.INCORRECT_BRACKETS, fatal=True)
+            else:
+                stack.append(bracket)
+        if len(stack) != 0:
+            raiseException(ParserException.INCORRECT_BRACKETS, fatal=True)
 
     def convert_to_asm(self) -> str:
         """Convert the parsed code to assembly code"""

@@ -66,3 +66,30 @@ def is_number(string: str) -> bool:
     except:
         res = False
     return res
+
+def is_close_braket(bracket: str) -> bool:
+    """Return if the given bracket is a close one"""
+    res = False
+    if bracket in brackets:
+        res = brackets.index(bracket) % 2 == 1
+    return res
+
+def get_close_bracket(bracket: str) -> str:
+    """Return the assiociated close bracket"""
+    res = None
+    if bracket in brackets:
+        index = brackets.index(bracket)
+        if index % 2 == 0:
+            res = brackets[index + 1]
+    return res
+
+def is_same_brakets_type(bracket1: str, bracket2: str) -> bool:
+    """Return if the brackets are from the same type (eg: '{' and '}')"""
+    same = False
+    if bracket1 in brackets and bracket2 in brackets:
+        index = brackets.index(bracket1)
+        offset = 1
+        if not index % 2 == 0:
+            offset = -1
+        same = brackets[index + offset] == bracket2
+    return same
