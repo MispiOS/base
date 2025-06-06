@@ -1,12 +1,18 @@
 operators = ["+", "-", "*", "/", "%", "^", "|", "&", "!"]
 comparators = ["=", "<", ">"]
 brackets = ["(", ")", "{", "}", "[", "]"]
-other_key_caracters = [";", "$"]
+other_key_caracters = [";", "$", ","]
 keywords = [
-    "if", "else", "else-if", "while", "function", "public", "private", "switch", "case", "break", "return", "null", "void", "default","class",
+    "if", "else", "else-if", "while", "function", "public", "private", "switch", "case", "break", "return", "null", "default","class",
     "interface", "abstract", "extends", "implements", "import"
 ]
-types = ["int", "float", "char"]
+types = ["void", "char", "int", "long"]
+
+types_size = {
+    "char": 2,
+    "int": 4,
+    "long": 8
+}
 
 def is_key_caracter(caracter: str) -> bool:
     """Return if the caracter is a keyword"""
@@ -67,7 +73,7 @@ def is_number(string: str) -> bool:
         res = False
     return res
 
-def is_close_braket(bracket: str) -> bool:
+def is_close_bracket(bracket: str) -> bool:
     """Return if the given bracket is a close one"""
     res = False
     if bracket in brackets:

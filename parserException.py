@@ -4,8 +4,11 @@ class ParserException(Enum):
     NO_FILE_GIVEN = "No file given in arguments"
     NOT_BASE_FILE = "The file '{}' is not a Base file"
     FILE_DOES_NOT_EXISTS = "The file '{}' doesn't exist"
+    INVALID_FILE = "Invalid File"
     VARIABLE_FUNCTION_CANNOT_STARTS_WITH_NUMBER = "A variable name or a function name can't start with a number\nAt '{}'."
     INCORRECT_BRACKETS = "Bracket are not correct !"
+    UNEXPECTED_WORD = "Unexpected word '{}'"
+    UNEXPECTED_WORD_EXPECT = "Unexpected word '{}', expect '{}'"
 
 def raiseExceptionStr(exception: str, fatal: bool = True):
     """Raise an Exception and terminate the program if asked"""

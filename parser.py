@@ -2,6 +2,7 @@ from basetoken import BaseToken
 from basetype import BaseType
 from utils import *
 from parserException import ParserException, raiseException
+from treeizer import to_token_tree
 
 class Parser:
     to_parse: str
@@ -12,6 +13,7 @@ class Parser:
         self.to_parse = to_parse
         self.generate_tokens()
         self.verify_brackets()
+        token_tree = to_token_tree(self.tokens)
 
     def generate_tokens(self) -> None:
         """Generate the tokens of the given code"""
@@ -23,7 +25,6 @@ class Parser:
         while offset < offset_limit:
             token: BaseToken = self.next_word(offset, offset_limit)
             tokens.append(token)
-            print(token.get_type())
             offset = token.get_offset() + len(token.get_word())
         self.tokens = tokens
 
@@ -79,7 +80,7 @@ class Parser:
             if token.get_type() != BaseType.BRACKET:
                 continue
             bracket = token.get_word()
-            if is_close_braket(bracket):
+            if is_close_bracket(bracket):
                 raise_exception = True
                 if len(stack) != 0 and is_same_brakets_type(bracket, stack.pop()):
                     raise_exception = False
