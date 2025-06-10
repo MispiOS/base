@@ -14,6 +14,7 @@ class BaseType(Enum):
     TYPE = 8
     POINTER = 9
     COMMA = 10
+    DOT = 11
 
 
 def get_base_type(value: str) -> BaseType|ParserException:
@@ -26,6 +27,8 @@ def get_base_type(value: str) -> BaseType|ParserException:
         res = BaseType.POINTER
     elif value == ",":
         res = BaseType.COMMA
+    elif value == ".":
+        res = BaseType.DOT
     elif value.startswith("\""):
         res = BaseType.STRING
     elif value in operators:

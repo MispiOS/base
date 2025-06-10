@@ -14,6 +14,7 @@ class Parser:
         self.generate_tokens()
         self.verify_brackets()
         token_tree = to_token_tree(self.tokens)
+        #print(token_tree)
 
     def generate_tokens(self) -> None:
         """Generate the tokens of the given code"""
@@ -23,7 +24,10 @@ class Parser:
         to_parse = self.to_parse
         offset_limit = len(to_parse)
         while offset < offset_limit:
-            token: BaseToken = self.next_word(offset, offset_limit)
+            token: BaseToken|None = self.next_word(offset, offset_limit)
+            if token == None:
+                offset = offset_limit
+                continue
             tokens.append(token)
             offset = token.get_offset() + len(token.get_word())
         self.tokens = tokens
@@ -48,7 +52,7 @@ class Parser:
                 start_offset += 1
                 i += 1
             elif i + 1 < offset_limit and is_comment_start(to_parse[i:i+2]):
-                start_offset = get_end_of_comment_index(i, offset_limit, to_parse)
+                start_offset = get_end_of_comment_index(i, offset_limit, to_parse) + 1
                 i = start_offset
             elif is_key_caracter(caracter):
                 if word == "":
@@ -67,7 +71,7 @@ class Parser:
             else:
                 word += caracter
                 i += 1
-        return BaseToken(start_offset, word)
+        return BaseToken(start_offset, word) if word != "" else None
 
     def get_tokens(self) -> list[BaseToken]:
         """Return the tokens of the given code"""

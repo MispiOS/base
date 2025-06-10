@@ -1,7 +1,7 @@
 operators = ["+", "-", "*", "/", "%", "^", "|", "&", "!"]
 comparators = ["=", "<", ">"]
 brackets = ["(", ")", "{", "}", "[", "]"]
-other_key_caracters = [";", "$", ","]
+other_key_caracters = [";", "$", ",", "."]
 keywords = [
     "if", "else", "else-if", "while", "function", "public", "private", "switch", "case", "break", "return", "null", "default","class",
     "interface", "abstract", "extends", "implements", "import"
@@ -99,3 +99,17 @@ def is_same_brakets_type(bracket1: str, bracket2: str) -> bool:
             offset = -1
         same = brackets[index + offset] == bracket2
     return same
+
+def is_known_variable(known_var: list[list[tuple[str,str]]], var: str, type: str) -> bool:
+    for i in range(len(known_var)):
+        l = known_var[len(known_var) - 1 - i]
+        if (var, type) in l:
+            return True
+    return False
+
+def is_known_function(known_fnc: list[list[dict]], fnc_name: str, types: tuple) -> bool:
+    for l in known_fnc:
+        for f in l:
+            if f["name"] == fnc_name and f["args"] == types:
+                return True
+    return False

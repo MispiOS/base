@@ -1,11 +1,15 @@
 from basetoken import BaseToken
 from basetype import BaseType
-from parserException import ParserException, raiseException
-from utils import types, types_size, is_close_bracket, is_same_brakets_type
+from tree import *
+from parserException import *
+from utils import *
 
-def to_token_tree(tokens: list[BaseToken], inside_function=False) -> list:
+def to_token_tree(tokens: list[BaseToken], known_var: list[list[tuple[str,str]]]=[[]], known_fnc: list[list[dict]]=[[]], inside_function: bool=False) -> BinaryTree:
     """Transform tokens list to a tree"""
-    tree = []
+    tree = BinaryTree()
+    if inside_function:
+        known_var.append(known_fnc[-1][-1]["args"])
+        
     i = 0
     while i < len(tokens):
         actual_token = tokens[i]
@@ -13,16 +17,26 @@ def to_token_tree(tokens: list[BaseToken], inside_function=False) -> list:
         token_value = actual_token.get_word()
         if token_type == BaseType.KEYWORD:
             if token_value == "function":
-                fnct_tree = function_tree(tokens, i)
-                tree.append( fnct_tree[1] )
-                i = fnct_tree[0]
+                fn = function_node(tokens, i, known_var, known_fnc)
+                tree.add(fn[1])
+                i = fn[0]
+            else:
+                raiseExceptionStr("Keyword Error !", fatal=True)
+        #elif token_type == BaseType.TYPE:
+        #    dn = definition_node(tokens, i, known_var, known_fnc)
+        #    tree.add(dn[1])
+        #    i = dn[0]
+        elif token_type == BaseType.SEMILICON:
+            raiseException(ParserException.UNEXPECTED_WORD, ";", fatal=True)
         else:
             i += 1
+    if inside_function:
+        known_var.pop()
     return tree
 
-def function_tree(tokens: list[BaseToken], start: int) -> tuple[int, dict]:
-    """Transform tokens to a function tree
-    Returns the index of end of the function (after the '}') and the tree"""
+def function_node(tokens: list[BaseToken], start: int, known_var: list[list[tuple[str,str]]], known_fnc: list[list[dict]]) -> tuple[int, FunctionNode]:
+    """Transform tokens to a function node
+    Returns the index of end of the function (after the '}') and the node"""
     if start + 3 >= len(tokens):
         raiseException(ParserException.INVALID_FILE)
     
@@ -35,8 +49,9 @@ def function_tree(tokens: list[BaseToken], start: int) -> tuple[int, dict]:
             (
                 type_token.get_type() == BaseType.TYPE and
                 type_token.get_word() in types
-            ) or
-            type_token.get_type() == BaseType.OTHER
+            ) 
+            #or
+            #type_token.get_type() == BaseType.OTHER
         )
     ):
         open_arg_bracket_token = tokens[start + 3]
@@ -78,14 +93,7 @@ def function_tree(tokens: list[BaseToken], start: int) -> tuple[int, dict]:
         for j in range(len(not_formated_args) // 2):
             arg_type = not_formated_args[j * 2].get_word()
             arg_name = not_formated_args[j * 2 + 1].get_word()
-            size = types_size[arg_type]
-            formated_args.append(
-                {
-                    "size": size,
-                    "name": arg_name,
-                    "type": arg_type
-                }
-            )
+            formated_args.append( (arg_name, arg_type) )
         
         open_function_bracket_token = tokens[i]
         if not open_function_bracket_token.get_word() == "{":
@@ -111,14 +119,25 @@ def function_tree(tokens: list[BaseToken], start: int) -> tuple[int, dict]:
                     raiseException(ParserException.INCORRECT_BRACKETS, fatal=True)
             i += 1
         
-        content = to_token_tree(tokens[function_start:i], inside_function=True)
-
-        return (i, {
-            "type": "function",
+        known_fnc[-1].append({
             "name": function_name_token.get_word(),
             "args": formated_args,
-            "content": content
+            "type": type_token.get_word()
         })
+        content = to_token_tree(tokens[function_start:i], known_var, known_fnc, inside_function=True)
+        
+        return (
+            i,
+            FunctionNode(
+                function_name_token.get_word(),
+                formated_args,
+                type_token.get_word(),
+                content
+            )
+        )
     else:
         raiseException(ParserException.UNEXPECTED_WORD, "function", fatal=True)
     return None
+
+def definition_node(tokens: list[BaseToken], start: int, known_var: list[list[tuple[str,str]]], known_fnc: list[list[dict]]) -> tuple[int, DefinitionNode]:
+    ...
